@@ -76,7 +76,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-left: 20px;
 }
 
 .logo-image {
