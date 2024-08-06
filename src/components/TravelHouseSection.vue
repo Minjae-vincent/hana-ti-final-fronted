@@ -1,6 +1,6 @@
 <!-- src/components/PhotoSection.vue -->
 <template>
-  <section class="photo-section">
+  <section class="photo-section" ref="TravelHouseSection">
     <div class="overlay"></div>
     <div class="content">
       <h1 class="overlay-text">
@@ -17,7 +17,30 @@
   </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const TravelHouseSection = ref(null)
+
+onMounted(() => {
+  const handleIntersection = (entry) => {
+    if (entry.isIntersecting) {
+      TravelHouseSection.value.classList.add('visible')
+    }
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        handleIntersection(entry)
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  observer.observe(TravelHouseSection.value)
+})
+</script>
 
 <style scoped>
 @font-face {
@@ -38,10 +61,16 @@
   position: relative;
   width: 100%;
   height: 700px;
-  background-image: url('@/assets/img/homeImg1.png');
+  background-image: url('@/assets/img/homeImg3.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 1s ease-in-out; /* Smooth transition */
+}
+
+.photo-section.visible {
+  opacity: 1; /* Make visible when intersecting */
 }
 
 .overlay {
@@ -56,9 +85,9 @@
 .content {
   position: absolute;
   top: 50%;
-  left: 145px;
-  transform: translateY(-50%);
-  text-align: left;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
   color: white;
 }
 
@@ -89,6 +118,5 @@
 .overlay-button:hover {
   color: #03ac8e;
   border-color: #03ac8e;
-  background-color: transparent;
 }
 </style>

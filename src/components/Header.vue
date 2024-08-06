@@ -35,14 +35,17 @@
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   background-color: white;
   padding: 1rem 0;
   color: white;
   text-align: center;
   font-family: 'Hana2-Bold', sans-serif;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Bottom shadow */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .menu-bar {
@@ -57,11 +60,11 @@
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: bold;
-  font-family: inherit; /* Inherit the default or any other specified font */
+  font-family: inherit;
 }
 
 .logo-image {
-  width: 130px; /* Adjust size as needed */
+  width: 130px;
   height: auto;
 }
 
