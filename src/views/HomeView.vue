@@ -1,9 +1,19 @@
+<!-- src/views/home.vue -->
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import Header from '../components/Header.vue'
+import PhotoSection from '../components/PhotoSection.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <Header />
+    <div class="spacer"></div>
+    <PhotoSection />
   </main>
 </template>
+
+<style scoped>
+.spacer {
+  height: 20px;
+}
+</style>
