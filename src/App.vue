@@ -1,33 +1,37 @@
-<!-- src/App.vue -->
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div id="app">
-    <div class="container">
-      <RouterView />
-    </div>
+    <Header />
+    <main class="main-content">
+      <div class="container">
+        <router-view />
+      </div>
+    </main>
+    <Footer />
   </div>
 </template>
 
+<script setup>
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
+</script>
+
 <style>
-@font-face {
-  font-family: 'Hana2-Bold';
-  src: url('@/assets/fonts/Hana2-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-#app {
-  font-family: 'Hana2-Bold', sans-serif;
+.main-content {
+  flex: 1;
+  padding-top: 70px;
+  padding-bottom: 70px;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 1rem; /* Optional: Add some padding for better look */
+  width: 1440px;
+  max-width: 100%;
 }
 </style>

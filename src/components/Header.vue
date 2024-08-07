@@ -1,21 +1,20 @@
-<!-- src/components/Header.vue -->
 <template>
   <header class="header">
     <nav class="menu-bar">
       <div class="logo">
-        <a href="#home">
+        <router-link to="/">
           <img src="@/assets/img/logo.png" alt="Logo" class="logo-image" />
-        </a>
+        </router-link>
       </div>
       <ul class="menu">
-        <li><a href="#home">홈</a></li>
+        <li><router-link to="/" exact-active-class="active-link">홈</router-link></li>
         <li><a href="#about">내 여행</a></li>
         <li><a href="#services">환율하우스</a></li>
         <li><a href="#contact">여행하우스</a></li>
       </ul>
       <ul class="actions">
-        <li><a href="#signup">로그인</a></li>
-        <li><a href="#logout">회원가입</a></li>
+        <li><router-link to="/login" active-class="active-link">로그인</router-link></li>
+        <li><router-link to="/register" active-class="active-link">회원가입</router-link></li>
         <li><a href="#notifications">알림</a></li>
       </ul>
     </nav>
@@ -92,5 +91,9 @@
 .actions a:hover {
   color: #03ac8e;
   text-decoration: none;
+}
+
+.active-link {
+  color: #03ac8e !important; /* Ensure this color is applied */
 }
 </style>

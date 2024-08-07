@@ -19,10 +19,6 @@
   </footer>
 </template>
 
-<script setup>
-// No additional script is needed for this simple footer
-</script>
-
 <style scoped>
 @font-face {
   font-family: 'Hana2-Bold';
@@ -34,12 +30,11 @@
 .footer {
   background-color: #303030;
   height: 200px;
-  width: 100vw; /* Full viewport width */
-  margin-left: calc(-50vw + 50%); /* Adjust for centering */
+  width: 100%;
   padding: 20px;
   color: white;
   font-family: 'Hana2-Bold', sans-serif;
-  font-size: 15px; /* Set global font size for the footer */
+  font-size: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -76,15 +71,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 20px;
 }
 
 .logo-image {
-  width: 150px; /* Adjust width as needed */
+  width: 150px;
   height: auto;
 }
 
 .footer-bottom {
   text-align: left;
+  margin-top: 20px;
 }
 
 .footer-bottom p {
