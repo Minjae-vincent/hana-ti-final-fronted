@@ -171,7 +171,6 @@
   background-color: transparent;
   border: 1px solid #03ac8e;
   border-radius: 21px;
-  font-size: 16px;
   font-weight: bold;
   color: #000;
   cursor: pointer;
