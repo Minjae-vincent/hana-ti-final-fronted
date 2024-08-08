@@ -10,20 +10,38 @@
       <hr class="divider" />
       <div class="form-container">
         <div class="form-group">
-          <input type="text" id="name" class="form-input" value="홍길동" readonly />
+          <input
+            type="text"
+            id="name"
+            class="form-input"
+            v-model="user.kakao_account.name"
+            readonly
+          />
           <select class="form-input" disabled>
             <option>내국인</option>
           </select>
         </div>
         <div class="form-group">
-          <input type="text" id="dob" class="form-input" value="980503" readonly />
+          <input
+            type="text"
+            id="dob"
+            class="form-input"
+            v-model="user.kakao_account.birthyear"
+            readonly
+          />
           <select class="form-input" disabled>
             <option>남성</option>
           </select>
         </div>
-        <div class="form-group">
-          <input type="text" id="phone" class="form-input" value="010" readonly />
-          <input type="text" id="phone-second" class="form-input" value="40353313" readonly />
+        <div class="form-group full-width">
+          <!-- <input type="text" id="phone" class="form-input" value="010" readonly /> -->
+          <input
+            type="text"
+            id="phone-second"
+            class="form-input full-width"
+            v-model="user.kakao_account.phone_number"
+            readonly
+          />
         </div>
         <hr class="divider" />
         <div class="form-group id-group">
@@ -53,7 +71,11 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+const { user } = history.state
+
+console.log(user)
+</script>
 
 <style scoped>
 @font-face {

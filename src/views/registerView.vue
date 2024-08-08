@@ -6,7 +6,11 @@
       <div class="description-wrapper">
         <p class="description">카카오 간편 회원가입으로 보다 간편하게 회원가입이 가능합니다.</p>
       </div>
-      <button class="kakao-button" @click="navigateToRegisterInfo">
+      <!-- <button class="kakao-button" @click="navigateToRegisterInfo">
+        <img src="@/assets/img/kakao_icon.png" alt="Kakao Icon" class="kakao-icon" />
+        카카오 1초 간편가입
+      </button> -->
+      <button class="kakao-button" @click="signUpWithKakao">
         <img src="@/assets/img/kakao_icon.png" alt="Kakao Icon" class="kakao-icon" />
         카카오 1초 간편가입
       </button>
@@ -16,13 +20,23 @@
   </main>
 </template>
 
-<script setup>
+<script>
 import { useRouter } from 'vue-router'
-
 const router = useRouter()
 
-const navigateToRegisterInfo = () => {
-  router.push({ name: 'register-info' })
+// eslint-disable-next-line vue/no-export-in-script-setup
+export default {
+  methods: {
+    navigateToRegisterInfo() {
+      router.push({ name: 'register-info' })
+    },
+
+    signUpWithKakao() {
+      window.Kakao.Auth.authorize({
+        redirectUri: 'http://localhost:5173/register-redirect'
+      })
+    }
+  }
 }
 </script>
 
