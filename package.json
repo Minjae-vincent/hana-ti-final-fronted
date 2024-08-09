@@ -11,11 +11,15 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "axios": "^1.7.3",
     "pinia": "^2.1.7",
+    "vee-validate": "^4.13.2",
     "vue": "^3.4.29",
     "vue-kakao-sdk": "^0.2.5",
-    "vue-router": "^4.3.3"
+    "vue-router": "^4.3.3",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

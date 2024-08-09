@@ -9,62 +9,85 @@
       </div>
       <hr class="divider" />
       <div class="form-container">
-        <div class="form-group">
-          <input
-            type="text"
-            id="name"
-            class="form-input"
-            v-model="user.kakao_account.name"
-            readonly
-          />
-          <select class="form-input" disabled>
-            <option>내국인</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <input
-            type="text"
-            id="dob"
-            class="form-input"
-            v-model="user.kakao_account.birthyear"
-            readonly
-          />
-          <select class="form-input" disabled>
-            <option>남성</option>
-          </select>
-        </div>
-        <div class="form-group full-width">
-          <!-- <input type="text" id="phone" class="form-input" value="010" readonly /> -->
-          <input
-            type="text"
-            id="phone-second"
-            class="form-input full-width"
-            v-model="user.kakao_account.phone_number"
-            readonly
-          />
-        </div>
-        <hr class="divider" />
-        <div class="form-group id-group">
-          <input
-            type="text"
-            id="id"
-            class="form-input"
-            placeholder="아이디 (대/소문자 반드시 확인해주세요.)"
-          />
-          <button class="check-button">중복확인</button>
-        </div>
-        <div class="form-group full-width">
-          <input
-            type="password"
-            id="password"
-            class="form-input full-width"
-            placeholder="8-16자: 영문, 숫자, 특수문자 포함"
-          />
-        </div>
-        <div class="form-group full-width">
-          <input type="email" id="email" class="form-input full-width" placeholder="이메일 주소" />
-        </div>
-        <button class="submit-button">가입하기</button>
+        <form @submit.prevent="submitForm">
+          <div class="form-group">
+            <input
+              type="text"
+              id="name"
+              class="form-input"
+              v-model="user.kakao_account.name"
+              readonly
+            />
+            <select class="form-input" disabled>
+              <option>내국인</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              id="dob"
+              class="form-input"
+              v-model="user.kakao_account.birthdate"
+              readonly
+            />
+            <select class="form-input" disabled>
+              <option>{{ user.kakao_account.gender }}</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <input
+              type="text"
+              id="phone-second"
+              class="form-input full-width"
+              v-model="user.kakao_account.phone_number"
+              readonly
+            />
+          </div>
+          <hr class="divider" />
+          <div class="form-group id-group">
+            <input
+              type="text"
+              v-model="userInfo.id"
+              class="form-input"
+              placeholder="아이디 (대/소문자 반드시 확인해주세요.)"
+            />
+            <button class="check-button" @click="checkDuplicateId">중복확인</button>
+          </div>
+          <div class="form-group full-width">
+            <input
+              type="password"
+              v-model="userInfo.password"
+              class="form-input full-width"
+              placeholder="8-16자: 영문, 숫자, 특수문자 포함"
+              @blur="$v.userInfo.password.$touch()"
+            />
+            <span v-if="$v.userInfo.password.$error" class="error-message">
+              <span v-if="!$v.userInfo.password.required">패스워드는 필수입니다.</span>
+              <span v-if="!$v.userInfo.password.minLength">8자 이상이어야 합니다.</span>
+              <span v-if="!$v.userInfo.password.maxLength">16자 이하여야 합니다.</span>
+              <span v-if="!$v.userInfo.password.matches"
+                >영문, 숫자, 특수문자를 포함해야 합니다.</span
+              >
+            </span>
+          </div>
+          <div class="form-group full-width">
+            <input
+              type="email"
+              v-model="userInfo.email"
+              class="form-input full-width"
+              placeholder="이메일 주소"
+            />
+          </div>
+          <div class="form-group full-width">
+            <input
+              type="password"
+              v-model="userInfo.ssnLast"
+              class="form-input full-width"
+              placeholder="주민등록번호 뒷자리(7자)"
+            />
+          </div>
+          <button :disabled="!isIdChecked || $v.$invalid" class="submit-button">가입하기</button>
+        </form>
       </div>
     </div>
     <div class="spacer-footer"></div>
@@ -73,158 +96,85 @@
 
 <script setup>
 const { user } = history.state
+user.kakao_account.birthdate = (
+  user.kakao_account.birthyear + user.kakao_account.birthday
+).substring(2)
 
 console.log(user)
 </script>
 
+<script>
+import { reactive } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
+
+export default {
+  setup() {
+    const userInfo = reactive({
+      name: '',
+      ssnFirst: '',
+      phoneNumber: '',
+      id: '',
+      password: '',
+      email: '',
+      ssnLast: ''
+    })
+
+    const rules = {
+      userInfo: {
+        password: {
+          required,
+          minLength: minLength(8),
+          maxLength: maxLength(16),
+          matches: helpers.regex(
+            'matches',
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+          )
+        },
+        id: { required } // Add validation rule for id as well if needed
+      }
+    }
+
+    const v$ = useVuelidate(rules, { userInfo })
+
+    return { userInfo, v$ }
+  },
+  data() {
+    return {
+      isIdChecked: false
+    }
+  },
+  methods: {
+    async checkDuplicateId() {
+      try {
+        const response = await axios.get('http://localhost:8081/api/user/id-check', {
+          params: {
+            id: this.userInfo.id
+          }
+        })
+        if (response.data.exists) {
+          console.log(response.data)
+          alert('아이디가 이미 존재합니다.')
+          this.isIdChecked = false
+        } else {
+          console.log(response.data)
+          alert('사용 가능한 아이디입니다.')
+          this.isIdChecked = true
+        }
+      } catch (error) {
+        console.error(error)
+        alert('중복 확인 중 오류가 발생했습니다.')
+        this.isIdChecked = false
+      }
+    }
+  }
+}
+</script>
+
 <style scoped>
-@font-face {
-  font-family: 'Hana2-Bold';
-  src: url('@/assets/fonts/Hana2-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Hana2-Light';
-  src: url('@/assets/fonts/Hana2-Light.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.spacer-header {
-  height: 103px;
-}
-
-.spacer-footer {
-  height: 70px;
-}
-
-.main-content {
-  padding-top: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.content {
-  text-align: center;
-}
-
-.title {
-  font-size: 36px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  font-family: 'Hana2-Bold', sans-serif;
-}
-
-.description-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-
-.description {
-  margin: 0;
-  font-size: 18px;
-  font-family: 'Hana2-Light', sans-serif;
-  width: 750px;
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.divider {
-  width: 750px;
-  margin-top: 60px;
-  margin-bottom: 55px;
-  border: none;
-  border-top: 1px solid #ddd;
-}
-
-.form-container {
-  width: 750px;
-  text-align: left;
-}
-
-.form-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.form-group.full-width {
-  width: 100%;
-  display: flex;
-}
-
-.form-group.id-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.form-input {
-  width: 49%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-}
-
-.form-input.full-width {
-  width: 100%;
-}
-
-.form-input[readonly] {
-  background-color: #e9e9e9;
-}
-
-.form-group.id-group .form-input {
-  width: calc(100% - 120px);
-}
-
-.check-button {
-  width: 100px;
-  padding: 10px;
-  background-color: transparent;
-  border: 1px solid #03ac8e;
-  border-radius: 21px;
-  font-weight: bold;
-  color: #000;
-  cursor: pointer;
-  font-family: 'Hana2-Bold', sans-serif;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.submit-button {
-  width: 100%;
-  padding: 15px 0;
-  background-color: transparent;
-  border: 1px solid #03ac8e;
-  border-radius: 21px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-  cursor: pointer;
-  margin-top: 20px;
-  font-family: 'Hana2-Bold', sans-serif;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.check-button:hover,
-.submit-button:hover {
-  background-color: #03ac8e;
-  color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
 }
 </style>
